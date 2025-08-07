@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complete npm Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root {
+      --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --surface: rgba(255, 255, 255, 0.95);
+      --text: #2d3748;
+      --text-secondary: #4a5568;
+      --accent: #667eea;
+      --accent-hover: #5a6fd8;
+      --success: #48bb78;
+      --warning: #ed8936;
+      --error: #f56565;
+      --border: rgba(0, 0, 0, 0.1);
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    body.dark {
+      --bg: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+      --surface: rgba(45, 55, 72, 0.95);
+      --text: #e2e8f0;
+      --text-secondary: #a0aec0;
+      --accent: #4299e1;
+      --accent-hover: #3182ce;
+      --border: rgba(255, 255, 255, 0.1);
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    header {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .npm-logo {
+      font-size: 3rem;
+      color: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    .header-text {
+      text-align: left;
+    }
+
+    .header-text h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--accent), var(--success));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-text p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .toggle-mode {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      padding: 1rem;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1000;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow);
+    }
+
+    .toggle-mode:hover {
+      transform: scale(1.1) rotate(180deg);
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 2rem;
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .stat-icon {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .section {
+      padding: 2rem;
+      animation: fadeInUp 0.6s ease-out forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .section:nth-child(1) { animation-delay: 0.1s; }
+    .section:nth-child(2) { animation-delay: 0.2s; }
+    .section:nth-child(3) { animation-delay: 0.3s; }
+    .section:nth-child(4) { animation-delay: 0.4s; }
+    .section:nth-child(5) { animation-delay: 0.5s; }
+    .section:nth-child(6) { animation-delay: 0.6s; }
+    .section:nth-child(7) { animation-delay: 0.7s; }
+    .section:nth-child(8) { animation-delay: 0.8s; }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .section-header:hover {
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateX(5px);
+    }
+
+    .section-icon {
+      font-size: 2rem;
+      color: var(--accent);
+      transition: all 0.3s ease;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .expand-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .section.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .section-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .section.expanded .section-content {
+      max-height: 1000px;
+    }
+
+    .content-inner {
+      padding: 0 1rem 1rem 4rem;
+    }
+
+    code {
+      background: var(--accent);
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-family: 'Monaco', monospace;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .command-list {
+      list-style: none;
+    }
+
+    .command-list li {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      background: rgba(102, 126, 234, 0.05);
+      border-radius: 10px;
+      border-left: 4px solid var(--accent);
+      transition: all 0.3s ease;
+    }
+
+    .command-list li:hover {
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateX(5px);
+    }
+
+    .command-icon {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
+    .tip-list {
+      list-style: none;
+    }
+
+    .tip-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      background: rgba(72, 187, 120, 0.05);
+      border-radius: 10px;
+      border-left: 4px solid var(--success);
+      transition: all 0.3s ease;
+    }
+
+    .tip-list li:hover {
+      background: rgba(72, 187, 120, 0.1);
+      transform: translateX(5px);
+    }
+
+    .tip-icon {
+      color: var(--success);
+      font-size: 1.2rem;
+      margin-top: 0.2rem;
+    }
+
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--success);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin: 0.5rem 0;
+    }
+
+    .warning-box {
+      background: rgba(237, 137, 54, 0.1);
+      border: 1px solid var(--warning);
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .warning-icon {
+      color: var(--warning);
+      font-size: 1.5rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      margin-top: 4rem;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+      }
+      
+      .header-text h1 {
+        font-size: 2rem;
+      }
+      
+      .sections-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .content-inner {
+        padding: 0 1rem 1rem 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <span class="material-icons npm-logo">inventory_2</span>
+      <div class="header-text">
+        <h1>npm Complete Guide</h1>
+        <p>Node Package Manager - Everything you need to know</p>
+      </div>
+    </div>
+  </header>
+
+  <button class="toggle-mode glass" onclick="toggleTheme()">
+    <span class="material-icons">brightness_6</span>
+  </button>
+
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card glass">
+        <span class="material-icons stat-icon">download</span>
+        <div class="stat-number">2M+</div>
+        <div class="stat-label">Packages Available</div>
+      </div>
+      
+      <div class="stat-card glass">
+        <span class="material-icons stat-icon">trending_up</span>
+        <div class="stat-number">20B+</div>
+        <div class="stat-label">Downloads/Month</div>
+      </div>
+      
+      <div class="stat-card glass">
+        <span class="material-icons stat-icon">group</span>
+        <div class="stat-number">15M+</div>
+        <div class="stat-label">Developers</div>
+      </div>
+      
+      <div class="stat-card glass">
+        <span class="material-icons stat-icon">public</span>
+        <div class="stat-number">Global</div>
+        <div class="stat-label">Registry</div>
+      </div>
+    </div>
+
+    <div class="sections-grid">
+      <div class="section glass">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="material-icons section-icon">info</span>
+          <h2 class="section-title">What is npm?</h2>
+          <span class="material-icons expand-icon">expand_more</span>
+        </div>
+        <div class="section-content">
+          <div class="content-inner">
+            <p><strong>npm</strong> (Node Package Manager) is the world's largest software registry and the default package manager for Node.js. It consists of three main components:</p>
+            <ul style="margin: 1rem 0; padding-left: 2rem;">
+              <li>The <strong>CLI tool</strong> for managing packages</li>
+              <li>The <strong>online registry</strong> of packages</li>
+              <li>The <strong>website</strong> for discovering packages</li>
+            </ul>
+            <div class="version-badge">
+              <span class="material-icons">verified</span>
+              Current Version: 10.x
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section glass">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="material-icons section-icon">settings</span>
+          <h2 class="section-title">Installation & Setup</h2>
+          <span class="material-icons expand-icon">expand_more</span>
+        </div>
+        <div class="section-content">
+          <div class="content-inner">
+            <p>npm comes pre-installed with Node.js. To verify your installation:</p>
+            <ul class="command-list">
+              <li>
+                <span class="material-icons command-icon">terminal</span>
+                <code>node --version</code> - Check Node.js version
+              </li>
+              <li>
+                <span class="material-icons command-icon">terminal</span>
+                <code>npm --version</code> - Check npm version
+              </li>
+              <li>
+                <span class="material-icons command-icon">update</span>
+                <code>npm install -g npm@latest</code> - Update npm globally
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="section glass">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="material-icons section-icon">folder</span>
+          <h2 class="section-title">Important Files & Folders</h2>
+          <span class="material-icons expand-icon">expand_more</span>
+        </div>
+        <div class="section-content">
+          <div class="content-inner">
+            <ul class="command-list">
+              <li>
+                <span class="material-icons command-icon">description</span>
+                <div>
+                  <code>package.json</code> - Project metadata, dependencies, scripts
+                  <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Contains project info, dependencies, and custom scripts
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="material-icons command-icon">lock</span>
+                <div>
+                  <code>package-lock.json</code> - Dependency lock file
+                  <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Ensures consistent installations across environments
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="material-icons command-icon">folder</span>
+                <div>
+                  <code>node_modules/</code> - Installed packages directory
+                  <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Contains all downloaded dependencies (don't commit to Git)
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="material-icons command-icon">block</span>
+                <div>
+                  <code>.npmignore</code> - Files to ignore when publishing
+                  <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Similar to .gitignore but for npm publishing
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="section glass">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="material-icons section-icon">code</span>
+          <h2 class="section-title">Essential Commands</h2>
+          <span class="material-icons expand-icon">expand_more</span>
+        </div>
+        <div class="section-content">
+          <div class="content-inner">
+            <ul class="command-list">
+              <li>
+                <span class="material-icons command-icon">create_new_folder</span>
+                <code>npm init</code> - Initialize new project
+              </li>
+              <li>
+                <span class="material-icons command-icon">download</span>
+                <code>npm install</code> - Install all dependencies
+              </li>
+              <li>
+                <span class="material-icons command-icon">add_box</span>
+                <code>npm install &lt;package&gt;</code> - Add new package
+              </li>
+              <li>
+                <span class="material-icons command-icon">build</span>
+                <code>npm install &lt;package&gt; --save-dev</code> - Add dev dependency
+              </li>
+              <li>
+                <span class="material-icons command-icon">delete</span>
+                <code>npm uninstall &lt;package&gt;</code> - Remove package
+              </li>
+              <li>
+                <span class="material-icons command-icon">update</span>
+                <code>npm update</code> - Update all packages
+              </li>
+              <li>
+                <span class="material-icons command-icon">play_arrow</span>
+                <code>npm run &lt;script&gt;</code> - Execute custom script
+              </li>
+              <li>
+                <span class="material-icons command-icon">search</span>
+                <code>npm search &lt;term&gt;</code> - Search for packages
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="section glass">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="material-icons section-icon">build</span>
+          <h2 class="section-title">Advanced Commands</h2>
+          <span class="material-icons expand-icon">expand_more</span>
+        </div>
+        <div class="section-content">
+          <div class="content-inner">
+            <ul class="command-list">
+              <li>
+                <span class="material-icons command-icon">security</span>
+                <code>npm audit</code> - Check for security vulnerabilities
+              </li>
+              <li>
+                <span class="material-icons command-icon">healing</span>
+                <code>npm audit fix</code> - Automatically fix vulnerabilities
+              </li>
+              <li>
+                <span class="material-icons command-icon">list</span>
+                <code>npm ls</code> - List installed packages
+              </li>
+              <li>
+                <span class="material-icons command-icon">outdated</span>
+                <code>npm outdated</code> - Check for outdated packages
+              </li>
+              <li>
+                <span class="material-icons command-icon">cleaning_services</span>
+                <code>npm prune</code> - Remove unused packages
+              </li>
+              <li>
+                <span class="material-icons command-icon">cached</span>
+                <code>npm cache clean --force</code> - Clear npm cache
+              </li>
+              <li>
+                <span class="material-icons command-icon">publish</span>
+                <code>npm publish</code> - Publish package to registry
+              </li>
+              <li>
+                <span class="material-icons command-icon">link</span>
+                <code>npm link</code> - Create symbolic link for local development
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="section glass">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="material-icons section-icon">lightbulb</span>
+          <h2 class="section-title">Best Practices & Tips</h2>
+          <span class="material-icons expand-icon">expand_more</span>
+        </div>
+        <div class="section-content">
+          <div class="content-inner">
+            <ul class="tip-list">
+              <li>
+                <span class="material-icons tip-icon">check_circle</span>
+                <div>
+                  <strong>Use package-lock.json:</strong> Always commit this file to ensure consistent installations across environments
+                </div>
+              </li>
+              <li>
+                <span class="material-icons tip-icon">security</span>
+                <div>
+                  <strong>Regular Security Audits:</strong> Run <code>npm audit</code> regularly to check for vulnerabilities
+                </div>
+              </li>
+              <li>
+                <span class="material-icons tip-icon">construction</span>
+                <div>
+                  <strong>Dev Dependencies:</strong> Use <code>--save-dev</code> for packages only needed during development
+                </div>
+              </li>
+              <li>
+                <span class="material-icons tip-icon">speed</span>
+                <div>
+                  <strong>Use npx:</strong> Run packages without installing them globally with <code>npx &lt;package&gt;</code>
+                </div>
+              </li>
+              <li>
+                <span class="material-icons tip-icon">update</span>
+                <div>
+                  <strong>Keep Dependencies Updated:</strong> Regularly update packages to get security fixes and new features
+                </div>
+              </li>
+              <li>
+                <span class="material-icons tip-icon">folder</span>
+                <div>
+                  <strong>Don't Commit node_modules:</strong> Add it to your .gitignore file
+                </div>
+              </li>
+            </ul>
+            
+            <div class="warning-box">
+              <span class="material-icons warning-icon">warning</span>
+              <div>
+                <strong>Global Installation Warning:</strong> Avoid installing packages globally unless they're CLI tools you'll use across multiple projects.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section glass">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="material-icons section-icon">script</span>
+          <h2 class="section-title">Package.json Scripts</h2>
+          <span class="material-icons expand-icon">expand_more</span>
+        </div>
+        <div class="section-content">
+          <div class="content-inner">
+            <p>Common script configurations in package.json:</p>
+            <ul class="command-list">
+              <li>
+                <span class="material-icons command-icon">play_arrow</span>
+                <code>"start": "node index.js"</code> - Start the application
+              </li>
+              <li>
+                <span class="material-icons command-icon">bug_report</span>
+                <code>"test": "jest"</code> - Run tests
+              </li>
+              <li>
+                <span class="material-icons command-icon">build</span>
+                <code>"build": "webpack --mode production"</code> - Build for production
+              </li>
+              <li>
+                <span class="material-icons command-icon">developer_mode</span>
+                <code>"dev": "nodemon index.js"</code> - Development server
+              </li>
+              <li>
+                <span class="material-icons command-icon">format_paint</span>
+                <code>"format": "prettier --write ."</code> - Format code
+              </li>
+              <li>
+                <span class="material-icons command-icon">rule</span>
+                <code>"lint": "eslint ."</code> - Lint code
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="section glass">
+        <div class="section-header" onclick="toggleSection(this)">
+          <span class="material-icons section-icon">troubleshoot</span>
+          <h2 class="section-title">Troubleshooting</h2>
+          <span class="material-icons expand-icon">expand_more</span>
+        </div>
+        <div class="section-content">
+          <div class="content-inner">
+            <ul class="command-list">
+              <li>
+                <span class="material-icons command-icon">delete_forever</span>
+                <div>
+                  <strong>Clear npm cache:</strong> <code>npm cache clean --force</code>
+                  <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Fixes corrupted cache issues
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="material-icons command-icon">refresh</span>
+                <div>
+                  <strong>Reinstall node_modules:</strong> Delete folder and run <code>npm install</code>
+                  <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Fixes dependency conflicts
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="material-icons command-icon">admin_panel_settings</span>
+                <div>
+                  <strong>Permission issues:</strong> Use <code>sudo</code> or fix npm permissions
+                  <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    Avoid using sudo when possible
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="material-icons command-icon">network_check</span>
+                <div>
+                  <strong>Network issues:</strong> Check proxy settings or use different registry
+                  <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    <code>npm config set registry https://registry.npmjs.org/</code>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="https://docs.npmjs.com/" class="footer-link">
+        <span class="material-icons">description</span>
+        Official Documentation
+      </a>
+      <a href="https://www.npmjs.com/" class="footer-link">
+        <span class="material-icons">public</span>
+        npm Registry
+      </a>
+      <a href="https://nodejs.org/" class="footer-link">
+        <span class="material-icons">code</span>
+        Node.js
+      </a>
+    </div>
+    <p style="color: var(--text-secondary); margin-top: 1rem;">
+      © 2025 npm Complete Guide - Built with ❤️ for developers
+    </p>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    function toggleSection(headerElement) {
+      const section = headerElement.parentElement;
+      section.classList.toggle('expanded');
+    }
+
+    // Load saved theme
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+      }
+    });
+
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
